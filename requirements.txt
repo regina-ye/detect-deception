@@ -2,9 +2,9 @@ pandas
 numpy==1.26.4
 scikit-learn
 torch
-sklearn
 transformers==4.45.2
 sentence-transformers==3.1.1
 datasets==1.18.4
 lightgbm
 typing-extensions
+accelerate>=0.26.0
