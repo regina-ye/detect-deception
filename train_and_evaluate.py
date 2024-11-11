@@ -1,5 +1,8 @@
 from sklearn.metrics import f1_score, accuracy_score
-from sklearn.metrics import classification_report, precision_recall_fscore_support
+from sklearn.metrics import (
+    classification_report,
+    precision_recall_fscore_support,
+)
 import torch
 from transformers import Trainer, TrainingArguments
 from datasets import Dataset
@@ -7,8 +10,13 @@ from lightgbm import LGBMClassifier
 from lightgbm import early_stopping
 from typing import Tuple
 import os
+import warnings
 from process_data import DataLoader
-from all_models import FastTextProcessor, EnsembleModel, create_transformer_model
+from all_models import (
+    FastTextProcessor,
+    EnsembleModel,
+    create_transformer_model,
+)
 import pandas as pd
 import numpy as np
 
@@ -21,7 +29,12 @@ def compute_metrics(eval_pred):
         labels, predictions, average="weighted"
     )
     accuracy = accuracy_score(labels, predictions)
-    return {"accuracy": accuracy, "precision": precision, "recall": recall, "f1": f1}
+    return {
+        "accuracy": accuracy,
+        "precision": precision,
+        "recall": recall,
+        "f1": f1,
+    }
 
 
 class CustomTrainer(Trainer):
@@ -65,7 +78,10 @@ class ModelTrainer:
     def train_transformer(
         self, train_data: pd.DataFrame, val_data: pd.DataFrame
     ) -> Tuple[torch.nn.Module, object]:
-        """Train the transformer model with class weighting for imbalanced classes"""
+        """
+        Train the transformer model with class weighting for
+        imbalanced classes
+        """
         train_dataset = self.prepare_transformer_data(train_data)
         val_dataset = self.prepare_transformer_data(val_data)
 
@@ -83,7 +99,10 @@ class ModelTrainer:
         # tokenize datasets
         def tokenize_function(examples):
             return tokenizer(
-                examples["text"], padding="max_length", truncation=True, max_length=512
+                examples["text"],
+                padding="max_length",
+                truncation=True,
+                max_length=512,
             )
 
         train_dataset = train_dataset.map(tokenize_function, batched=True)
@@ -131,6 +150,9 @@ class ModelTrainer:
         unbalanced: bool,
     ) -> LGBMClassifier:
         """Train the gradient boosting model using LGBMClassifier"""
+        
+        warnings.filterwarnings("ignore", category=UserWarning, 
+                                module="lightgbm")
 
         model = LGBMClassifier(
             objective="binary",
@@ -244,7 +266,10 @@ def main():
 
                 # evaluate transformer
                 transformer_metrics = evaluate_and_print(
-                    transformer_model, test_data, "Transformer", tokenizer=tokenizer
+                    transformer_model,
+                    test_data,
+                    "Transformer",
+                    tokenizer=tokenizer,
                 )
                 results[f"{domain}_transformer"] = transformer_metrics
             else:

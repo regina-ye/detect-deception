@@ -1,7 +1,5 @@
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
-from torch import nn
-import lightgbm as lgb
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 from typing import List, Optional
@@ -39,7 +37,9 @@ class EnsembleModel:
         total_weight = sum(weights)
         self.weights = [w / total_weight for w in weights]
 
-    def predict(self, texts: List[str], domain_idx: Optional[int] = None) -> np.ndarray:
+    def predict(
+        self, texts: List[str], domain_idx: Optional[int] = None
+    ) -> np.ndarray:
         """Get predictions from the ensemble"""
         self.transformer_model = self.transformer_model.to("cpu")
 
@@ -49,11 +49,17 @@ class EnsembleModel:
 
         # get predictions from the transformer model
         transformer_inputs = self.tokenizer(
-            texts, return_tensors="pt", padding=True, truncation=True, max_length=512
+            texts,
+            return_tensors="pt",
+            padding=True,
+            truncation=True,
+            max_length=512,
         )
         with torch.no_grad():
             transformer_outputs = self.transformer_model(**transformer_inputs)
-            transformer_preds = torch.softmax(transformer_outputs.logits, dim=1).numpy()
+            transformer_preds = torch.softmax(
+                transformer_outputs.logits, dim=1
+            ).numpy()
 
         # combine predictions using normalized weights
         ensemble_preds = (
@@ -67,5 +73,7 @@ class EnsembleModel:
 def create_transformer_model(model_name: str = "distilbert-base-uncased"):
     """Initialize pre-trained transformer model"""
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
+    model = AutoModelForSequenceClassification.from_pretrained(
+        model_name, num_labels=2
+    )
     return model, tokenizer

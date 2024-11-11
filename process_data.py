@@ -24,7 +24,10 @@ class DataLoader:
     def load_domain_data(
         self, domain: str, sample_size: Optional[int] = None
     ) -> Optional[Dict[str, pd.DataFrame]]:
-        """Load train, test, and validation data for a domain from HuggingFace"""
+        """
+        Load train, test, and validation data for a domain
+        from HuggingFace
+        """
         print(f"Loading data for domain: {domain}")
 
         try:
@@ -51,7 +54,8 @@ class DataLoader:
                 data_dict[split] = df
                 print(
                     f"  {split}: loaded {len(df)} samples "
-                    f"({df['label'].sum()} deceptive, {len(df) - df['label'].sum()} non-deceptive)"
+                    f"({df['label'].sum()} deceptive, "
+                    f"{len(df) - df['label'].sum()} non-deceptive)"
                 )
 
             return data_dict if data_dict else None
@@ -132,10 +136,12 @@ class DataLoader:
                         f.write(f"\n{split}:\n")
                         f.write(f"  total samples: {total}\n")
                         f.write(
-                            f"  deceptive: {deceptive} ({deceptive/total*100:.1f}%)\n"
+                            f"  deceptive: {deceptive} "
+                            f"({deceptive / total * 100:.1f}%)\n"
                         )
                         f.write(
-                            f"  non-deceptive: {total-deceptive} ({(total-deceptive)/total*100:.1f}%)\n"
+                            f"  non-deceptive: {total-deceptive} "
+                            f"({(total-deceptive)/total*100:.1f}%)\n"
                         )
 
     def load_saved_data(self) -> Optional[Dict[str, Dict[str, pd.DataFrame]]]:
@@ -171,10 +177,12 @@ class DataLoader:
                     print(f"\n{split_name}:")
                     print(f"total samples: {total}")
                     print(
-                        f"deceptive samples: {deceptive} ({deceptive/total*100:.1f}%)"
+                        f"deceptive samples: {deceptive} "
+                        f"({deceptive / total * 100:.1f}%)"                    
                     )
                     print(
-                        f"non-deceptive samples: {total-deceptive} ({(total-deceptive)/total*100:.1f}%)"
+                        f"non-deceptive samples: {total-deceptive} "
+                        f"({(total-deceptive)/total*100:.1f}%)"
                     )
 
 
@@ -184,7 +192,8 @@ def main():
 
     try:
         print("loading data from HuggingFace...")
-        data = loader.load_all_domains(sample_size=200, force_reload=True)
+        data = loader.load_all_domains(sample_size=200, 
+                                       force_reload=True)
 
         print("\nsaving data...")
         loader.save_processed_data(data)
