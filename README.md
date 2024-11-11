@@ -48,4 +48,3 @@ python train_and_evaluate.py > results.txt
 
 ### Author
 Regina Ye
-# detect-deception
