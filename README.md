@@ -12,7 +12,7 @@ This repository contains 3 machine learning models to detect deception in the [D
 
 ### 1. Clone the Repository
 ```bash
-git clone <repository url>
+git clone https://github.com/regina-ye/detect-deception.git
 ```
 
 ### 2. Install Dependencies
