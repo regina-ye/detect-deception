@@ -116,6 +116,7 @@ class DataLoader:
             print("you are trying to save invalid data")
             return
 
+        #create directory to save in
         Path(self.save_dir).mkdir(parents=True, exist_ok=True)
 
         # save main data
